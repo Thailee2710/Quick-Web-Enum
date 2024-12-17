@@ -1,13 +1,5 @@
 👋 Scan path, ports, and service 
-
-                     _                                _ 
-                    | |                              | |
-  _ __ ___  __ _  __| |_ __ ___   ___   _ __ ___   __| |
- | `__/ _ \/ _` |/ _/ | '_ ` _ \ / _ \ | '_ ' _ \ / _` |
- | | |  __/ (_|-| (_| | | | | | |  __/_| | | | | | (_| |
- |_|  \___|\__,_|\__,_|_| |_| |_|\__|(_)_| |_| |_|\__,_|
-                                                        
-
+                                                    
 **Main-Purpose**: 
 - This script use for scan all path of url (domain and IP) (ex: https://abc.com/xyz/123). 
 - This script use for scan all ports from IP.
