@@ -387,7 +387,7 @@ if __name__ == "__main__":
     """
     print(title)
 
-    while action != '6':
+    while True:
         print("\033[0;35;40m##########--------##########")
         print("Your choice is: ")
         print("  1) Scan port of list IP (Can reverse Host to IP).")
@@ -397,11 +397,11 @@ if __name__ == "__main__":
         print("  5) Exit")
         action=str(input("Options: "))
         print("")
-        if action == '1' or action == '2' or action == '3' or action == '4' or action == '5':
+        if action in ['1', '2', '3', '4']:
             switch(action)
         elif action == '5':
             print(" --- Thank you, bye bye ---")
+            break
         else:
             print("Invalid")
 
-    
