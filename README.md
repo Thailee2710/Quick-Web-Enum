@@ -1,49 +1,143 @@
-👋 Scan path, ports, and service 
-                                                    
-**Main-Purpose**: 
-- This script use for scan all path of url (domain and IP) (ex: https://abc.com/xyz/123). 
-- This script use for scan all ports from IP.
-- This script use for check service from input.
-- This script user for audit API from input.
-- This script is used to check if IP or DNS is working.
+# Quick Web Enum
 
----
-**Setup and Configuration**
-Support scan http-https. Main tool used in this scrpit is `Dirsearch`.
- * Update pip, apt, apt-get to latest version
- - To run need to install:
-    + `dirsearch`: 
-      - For Kali: sudo apt install dirsearch (For Kali Linux)
-      - For Ubuntu: git clone https://github.com/maurosoria/dirsearch.git ; cd dirsearch ; pip install -r requirements.txt
-    + `masscan`: sudo apt install masscan.
-    + `ffuf`: git clone https://github.com/ffuf/ffuf ; cd ffuf ; go build
-    + `Other`: pip install -r requirements.txt
+Quick Web Enum is a lightweight command-line toolkit for **authorized** web reconnaissance. It started as a helper script for scanning ports, probing HTTP/HTTPS endpoints, and checking DNS. Version 2 modernizes the project into a safer Python package with a test suite, predictable CLI commands, and no required runtime dependencies.
 
- - To edit option you can see [Dirsearch](https://www.kali.org/tools/dirsearch/),[Masscan](https://www.kali.org/tools/masscan/),[Nmap](https://www.kali.org/tools/nmap/).
- - Input and output files can be edited at `config.ini` *(Recommended to review before using this script)*.
+> Use this only on systems you own or have explicit permission to assess.
 
-### **Run script**: `python qwc.py`
----
-**Input Data Rule**
-- Input should be `domain` or `IP`
-- Do not input the IP range because the script cannot run.
-- Input and output paths should be correct (edit through `config.ini`)
-- With input as domain thid `cannot` be:
-   + http:// or https://
-   + / at the end
+## What's new in v2
 
-**Feature**
- - This script has 3 features:
-   1. Scan all ports of input IP.
-   2. Scan for subpaths in the domain.
-      1. Dirsearch
-      2. FFUF
-   3. Scan service through Nmap.
-   4. Check IP Onl/Off and DNS reverse lookup
+- Replaced the old interactive menu with an `argparse` CLI.
+- Removed unsafe `shell=True` command construction for the built-in scanner.
+- Removed unnecessary runtime dependencies (`numpy`, `configparser`).
+- Added installable console scripts: `quick-web-enum` and `qwc`.
+- Added unit tests for parsing, URL generation, safe output names, and CSV serialization.
+- Added `.gitignore`, `pyproject.toml`, and modern packaging metadata.
+- Kept `python qwc.py ...` as a backward-compatible launcher.
 
- **Note**:
- - If running `option 2` (scan path) fails, you just need to reinstall `dirsearch`
- - This script just working only on Linux (Recommend: Kali Linux)
- - After running `pip install -r requirements.txt` the script is now operational. You can install additional tools to use specific functionalities.
+## Install
 
- 💞 Thanks you, hope you happy when use this tool 💞
+### From source
+
+```bash
+git clone https://github.com/Thailee2710/Quick-Web-Enum.git
+cd Quick-Web-Enum
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e .
+```
+
+For development tools:
+
+```bash
+python -m pip install -e '.[dev]'
+```
+
+If you use `uv`:
+
+```bash
+uv venv
+uv pip install -e '.[dev]'
+```
+
+## Commands
+
+### Check HTTP/HTTPS availability
+
+```bash
+quick-web-enum check example.com 10.0.0.1:8080 https://example.com/admin
+```
+
+Output format:
+
+```text
+status size content-type url title-or-error
+```
+
+### Resolve DNS and reverse DNS
+
+```bash
+quick-web-enum resolve example.com 8.8.8.8
+```
+
+### Scan explicit TCP ports
+
+The built-in port scanner is a conservative TCP connect scanner. It is not a replacement for `masscan`, but it is safe and dependency-free for quick checks.
+
+```bash
+quick-web-enum ports example.com --ports 80,443,8000-8010 --timeout 1
+```
+
+### Probe common paths
+
+```bash
+quick-web-enum paths example.com -w common.txt -o output/endpoints
+```
+
+This writes one CSV per target and a combined `summary.csv`.
+
+### Read targets from a file
+
+```bash
+quick-web-enum check -f input/ipNoPort.txt
+quick-web-enum paths -f output/domain.txt -w common.txt -o output/endpoints
+```
+
+## Backward compatibility
+
+The old entrypoint still works, but now expects subcommands:
+
+```bash
+python qwc.py check example.com
+python qwc.py paths example.com -w common.txt
+```
+
+## Suggested external workflow
+
+Quick Web Enum now provides a safe baseline. For deeper authorized assessments, combine it with specialist tools:
+
+- `nmap` for detailed service/version detection.
+- `masscan` for large-scale high-speed port discovery.
+- `ffuf` or `dirsearch` for aggressive content discovery.
+
+Example handoff:
+
+```bash
+quick-web-enum ports example.com --ports 80,443,8080,8443
+quick-web-enum paths example.com -w common.txt -o output/endpoints
+nmap -sV -Pn -p 80,443 example.com
+```
+
+## Development
+
+Run tests:
+
+```bash
+python -m pytest
+```
+
+Run lint:
+
+```bash
+ruff check .
+```
+
+Run a security sanity scan:
+
+```bash
+bandit -q -r quick_web_enum qwc.py
+```
+
+## Repository layout
+
+```text
+quick_web_enum/     Modern package and CLI
+tests/              Unit tests
+qwc.py              Backward-compatible launcher
+common.txt          Small sample wordlist
+input/              Example input files
+output/             Runtime output directory placeholder
+```
+
+## License
+
+MIT. See [LICENSE](LICENSE).

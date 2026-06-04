@@ -1,0 +1,22 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Runtime scan outputs
+output/*
+!output/.gitkeep
+*.csv
+*.jsonl
+*.log
+uv.lock
+
+# Local config overrides
+.env
+config.local.ini

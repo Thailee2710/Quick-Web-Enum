@@ -1,2 +1,4 @@
-numpy==1.25.2
-configparser==5.3.0
+# Runtime dependencies are intentionally empty.
+# Quick Web Enum 2.x uses Python's standard library for its baseline scanner.
+# Install developer tooling with:
+#   uv pip install -e '.[dev]'
